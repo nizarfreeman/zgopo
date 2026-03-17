@@ -1,10 +1,9 @@
 #!/bin/bash
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
+    mysql_install_db --user=root --datadir=/var/lib/mysql
 
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql
-
-    mysqld --user=mysql &
+    mysqld --user=root &
 
     until mysqladmin ping --silent; do
         sleep 1
@@ -18,8 +17,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 FLUSH PRIVILEGES;
 EOF
 
-    mysqladmin -u root shutdown
-
+    mysqladmin -u root -p${MYSQL_ROOT_PASSWORD} shutdown
 fi
 
-exec mysqld --user=mysql
+exec mysqld --user=root
